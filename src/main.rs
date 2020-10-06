@@ -74,6 +74,17 @@ async fn main() {
                             .request("messages.send", &mut param!{"random_id" => &random_id, "peer_id" => &peer_id, "message" => &quote})
                             .await
                             .unwrap();
+                    } else if text.starts_with("/цитата"){
+                        let text = text.replace("/цитата ", ""); // получаем текст, который нужно продолжить
+                        let mut quote = chain.generate_str_from_token(&text);
+                        if quote.is_empty(){
+                            quote = String::from("Я не смог сгенерировать цитату :(");
+                        }
+                        println!("Продолжаем текст с {}", text);
+                        vk_api
+                            .request("messages.send", &mut param!{"random_id" => &random_id, "peer_id" => &peer_id, "message" => &quote})
+                            .await
+                            .unwrap();
                     }
                 }
                 _ => {}
