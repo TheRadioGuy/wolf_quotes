@@ -1,5 +1,6 @@
 // Сделано мною в свободное время для vk.com/real_quotes
 // Хочу выразить спасибо Владу, Алине, Наде, Елдосу, MkFair
+// Матвей, не скамь бабулек!
 // - So how does the story of Wolf Brothers end?
 
 #[macro_use]
