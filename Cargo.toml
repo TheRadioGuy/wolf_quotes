@@ -11,3 +11,5 @@ vkapi = {branch="beta", git="https://github.com/DuckerMan/vk_api"}
 tokio = {version="*", features=["full"]}
 rand = "*"
 markov = "*"
+json = "*"
+reqwest = "*"
