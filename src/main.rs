@@ -37,8 +37,10 @@ async fn main() {
         chain.save("trained.chain").unwrap();
     } else if action == "bot" {
         let vk_api = vkapi::VK::new("5.103", "ru", access_token);
+        println!("Reading trained database..");
         let chain: Chain<String> = Chain::load("trained.chain")
             .expect("Для начала натренируйте сеть - .\\wolf_quotes train");
+        println!("Successfully read database!");
         let ch = vk_api.start_longpoll(198225294, 25);
 
         for event in ch {
@@ -62,12 +64,17 @@ async fn main() {
                         let text = text.replace("/цитата ", ""); // получаем текст, который нужно продолжить
                         final_quote = generate_quote(&chain, Some(text));
                     }
-                    vk_api
+
+                    dbg!(&final_quote);
+
+                    if !final_quote.is_empty(){
+                        vk_api
                         .request("messages.send", &mut param!{"random_id" => &random_id, "peer_id" => &peer_id, "message" => &final_quote})
                         .await
                         .unwrap();
+                    }
                 }
-                _ => {}
+                _ => {} // do nothing. really. nothing.
             }
         }
     } else {
@@ -75,7 +82,7 @@ async fn main() {
 }
 
 pub fn generate_quote(chain: &Chain<String>, start_token: Option<String>) -> String {
-    match start_token {
+     match start_token {
         Some(text) => {
             let mut quote = chain.generate_str_from_token(&text);
             if quote.is_empty() {
@@ -90,7 +97,7 @@ pub fn generate_quote(chain: &Chain<String>, start_token: Option<String>) -> Str
                 quote = loop {
                     // циклично генерируем цитату, пока не сгенерируем ее нормально(не пустую)
                     let new_quote = chain.generate_str();
-                    if new_quote.is_empty() {
+                    if new_quote.is_empty() || quote.contains("http") {
                         continue;
                     } else {
                         break new_quote;
